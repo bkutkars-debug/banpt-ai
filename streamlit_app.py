@@ -6,20 +6,32 @@ from datetime import datetime
 
 # Page Configuration
 st.set_page_config(
-    page_title="BANTPT AI — Autonomous Operations Center",
+    page_title="BANTPT AI — Autonomous Operations & Copilot",
     page_icon="🛡️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom Dark Theme CSS
+# Custom Dark Cyber Theme CSS
 st.markdown("""
 <style>
-    .main { background-color: #07090e; color: #f8fafc; }
+    .stApp { background-color: #07090e; color: #f8fafc; }
     .stButton>button { border-radius: 10px; font-weight: 600; }
-    .metric-card { background: rgba(15, 23, 42, 0.7); padding: 18px; border-radius: 12px; border: 1px solid #1e293b; }
+    .chat-bubble-user { background: #4f46e5; color: white; padding: 10px 14px; border-radius: 12px 12px 0px 12px; margin-bottom: 8px; margin-left: auto; width: fit-content; max-width: 80%; }
+    .chat-bubble-agent { background: #1e293b; color: #e2e8f0; padding: 10px 14px; border-radius: 12px 12px 12px 0px; margin-bottom: 8px; margin-right: auto; width: fit-content; max-width: 80%; border: 1px solid #334155; }
 </style>
 """, unsafe_allow_html=True)
+
+# Initialize Session States for Chat
+if "emergency_chat_history" not in st.session_state:
+    st.session_state["emergency_chat_history"] = [
+        {"role": "assistant", "content": "👋 I am your BantPT AI Emergency Dispatch Copilot. Ask me about first-aid procedures, nearest hospitals, or emergency handling instructions."}
+    ]
+
+if "soc_chat_history" not in st.session_state:
+    st.session_state["soc_chat_history"] = [
+        {"role": "assistant", "content": "🛡️ BantPT AI SOC Investigation Copilot online. Ask me about active indicators of compromise (IOCs), MITRE ATT&CK techniques, or containment playbooks."}
+    ]
 
 # Sidebar Navigation
 st.sidebar.title("🛡️ BANTPT AI")
@@ -27,10 +39,10 @@ st.sidebar.caption("Unified Autonomous Intelligence Platform v3.0")
 module = st.sidebar.radio("Select Active Operations Module:", ["🚨 Emergency Response (BANT PT)", "🛡️ Cyber Defense SOC (Sentinel AI)"])
 
 st.sidebar.markdown("---")
-st.sidebar.info("💡 **Autonomous Engine:** Multi-Agent Pipeline with 6 specialized decision agents running concurrently.")
+st.sidebar.info("💡 **Autonomous AI Copilot Engine:** Real-time conversational intelligence embedded in both Emergency & Cyber modules.")
 
 # ==============================================================================
-# MODULE 1: EMERGENCY RESPONSE ASSISTANT
+# MODULE 1: EMERGENCY RESPONSE ASSISTANT (WITH CHATBOT)
 # ==============================================================================
 if module == "🚨 Emergency Response (BANT PT)":
     st.title("🚨 BANT PT — Autonomous Emergency Response Assistant")
@@ -41,49 +53,87 @@ if module == "🚨 Emergency Response (BANT PT)":
     with col1:
         st.subheader("1. Emergency Intake Console")
         category = st.selectbox("Select Emergency Type", ["Road Accident", "Fire / Explosion", "Personal Safety / Threat", "Natural Disaster / Flood"])
-        emergency_text = st.text_area("Situation Description (Text / Voice Transcript)", value="Severe two-car accident on highway near overpass. One victim unconscious with heavy bleeding. Traffic blocked.", height=120)
+        emergency_text = st.text_area("Situation Description (Text / Voice Transcript)", value="Severe two-car accident on highway near overpass. One victim unconscious with heavy bleeding. Traffic blocked.", height=110)
         location = st.text_input("Incident Location Coordinates", value="Ring Road Sector 4 Junction, New Delhi")
         
         if st.button("⚡ Analyze Emergency & Dispatch Multi-Agent Grid", type="primary", use_container_width=True):
             with st.spinner("Orchestrating Situation, Risk, Action, Resource & Verification Agents..."):
-                time.sleep(1.2)
+                time.sleep(0.8)
                 st.session_state["emergency_analyzed"] = True
 
     with col2:
-        if st.session_state.get("emergency_analyzed"):
+        if st.session_state.get("emergency_analyzed", True):
             st.subheader("2. Real-Time Severity Engine")
             st.metric(label="Calculated Severity Index", value="98 / 100", delta="CRITICAL PRIORITY", delta_color="inverse")
             st.error("🚨 **Immediate Hazards:** Unconscious Casualty, Active Arterial Bleeding, High-Speed Traffic Obstruction.")
             st.caption("AI Confidence: **95%** | Target SLA: **< 4 minutes**")
 
-    if st.session_state.get("emergency_analyzed"):
-        st.markdown("---")
-        st.subheader("3. Step-by-Step Response Protocol & Responder Brief")
+    # Step-by-Step Response Cards
+    st.markdown("---")
+    st.subheader("3. Step-by-Step Response Protocol & Responder Brief")
+    
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        st.markdown("### ⚡ Step-by-Step Actions")
+        st.info("**Step 1: Secure Scene & Divert Traffic**\nPosition hazard triangles 50m upstream.")
+        st.info("**Step 2: Airway & Direct Pressure**\nApply firm, direct pressure on bleeding site with clean cloth. Do NOT remove helmet if spinal injury is suspected.")
+        st.info("**Step 3: Call 112 Dispatch**\nProvide exact coordinates and casualty counts.")
         
-        c1, c2, c3 = st.columns(3)
-        with c1:
-            st.markdown("### ⚡ Step-by-Step Actions")
-            st.info("**Step 1: Secure Scene & Divert Traffic**\nPosition hazard triangles 50m upstream.")
-            st.info("**Step 2: Airway & Direct Pressure**\nApply firm, direct pressure on bleeding site with clean cloth. Do NOT remove helmet if spinal injury is suspected.")
-            st.info("**Step 3: Call 112 Dispatch**\nProvide exact coordinates and casualty counts.")
-            
-        with c2:
-            st.markdown("### 📋 Official Dispatch Brief")
-            st.code("""[BANTPT EMERGENCY SOS BRIEF]
+    with c2:
+        st.markdown("### 📋 Official Dispatch Brief")
+        st.code("""[BANTPT EMERGENCY SOS BRIEF]
 INCIDENT ID: INC-2026-89A12F
 TYPE: Road Accident (Critical Trauma)
 LOCATION: Ring Road Sector 4 Junction, New Delhi
 CASUALTIES: 2 (1 Unconscious, 1 Severe Bleed)
 PRIMARY DISPATCH: Direct Trauma Unit & Traffic Control""", language="yaml")
-            
-        with c3:
-            st.markdown("### 🏥 Nearest Verified Resources")
-            st.success("🏥 **Apollo Trauma Center** — 1.8 km (4 min ETA)\n*ICU Equipped, 6 Beds Free*")
-            st.warning("🚓 **Police Patrol Unit 04** — 0.9 km (2 min ETA)")
-            st.error("🚒 **Fire Rescue Station 11** — 3.1 km (7 min ETA)")
+        
+    with c3:
+        st.markdown("### 🏥 Nearest Verified Resources")
+        st.success("🏥 **Apollo Trauma Center** — 1.8 km (4 min ETA)\n*ICU Equipped, 6 Beds Free*")
+        st.warning("🚓 **Police Patrol Unit 04** — 0.9 km (2 min ETA)")
+        st.error("🚒 **Fire Rescue Station 11** — 3.1 km (7 min ETA)")
+
+    # -------------------------------------------------------------------------
+    # EMERGENCY AI CHATBOT / COPILOT SECTION
+    # -------------------------------------------------------------------------
+    st.markdown("---")
+    st.subheader("💬 BantPT AI Emergency Field Copilot (Live Chat)")
+    st.caption("Ask questions about first aid, triage, handling burns, CPR rhythm, or bystander safety.")
+
+    # Display chat history
+    chat_container = st.container()
+    with chat_container:
+        for message in st.session_state["emergency_chat_history"]:
+            with st.chat_message(message["role"]):
+                st.markdown(message["content"])
+
+    # Chat Input
+    if prompt := st.chat_input("Ask the Emergency AI Assistant anything... (e.g. 'How do I perform CPR on an adult?' or 'How to stop bleeding?')"):
+        # User message
+        st.session_state["emergency_chat_history"].append({"role": "user", "content": prompt})
+        with st.chat_message("user"):
+            st.markdown(prompt)
+
+        # AI Assistant Response
+        p_low = prompt.lower()
+        if "cpr" in p_low:
+            reply = "🫀 **CPR Instructions:** Place heel of hand in center of chest. Push hard and fast at **100–120 beats/min** (to the rhythm of 'Stayin' Alive'). Compress 2 inches deep. Do not interrupt compressions until EMS arrives."
+        elif "bleed" in p_low or "blood" in p_low:
+            reply = "🩸 **Severe Bleeding Protocol:** 1) Apply firm direct pressure with sterile gauze or clean cloth. 2) Elevate injured limb if no fracture. 3) If bleeding does not stop through soaked dressing, apply a tourniquet 2-3 inches above the wound."
+        elif "burn" in p_low or "fire" in p_low:
+            reply = "🔥 **Burn Care Protocol:** Cool the burn under cool running water for at least 10–20 minutes. Do NOT use ice. Cover loosely with sterile plastic wrap or clean dry cloth. Do NOT pop blisters."
+        elif "hospital" in p_low or "call" in p_low or "where" in p_low:
+            reply = "🏥 **Nearest Dispatch Point:** Apollo Trauma Center is located 1.8 km away (Estimated arrival time: **4 mins**). Emergency helpline **112 / 108** is standing by."
+        else:
+            reply = f"🚨 **BantPT Emergency Dispatch Copilot:** Understood regarding '{prompt}'. In this active emergency, ensure responder scene safety first, keep the victim still with airway open, and confirm ambulance dispatch to {location}."
+
+        st.session_state["emergency_chat_history"].append({"role": "assistant", "content": reply})
+        with st.chat_message("assistant"):
+            st.markdown(reply)
 
 # ==============================================================================
-# MODULE 2: CYBER SECURITY SOC (SENTINEL AI)
+# MODULE 2: CYBER SECURITY SOC (WITH CHATBOT)
 # ==============================================================================
 else:
     st.title("🛡️ SENTINEL AI — Security Operations Center (SOC)")
@@ -99,7 +149,7 @@ else:
     
     if st.button("🚀 Inject Synthetic Cyber Telemetry & Correlate", type="primary"):
         with st.spinner("Correlating CloudTrail, Okta, and EDR streams..."):
-            time.sleep(1.0)
+            time.sleep(0.8)
             st.session_state["soc_analyzed"] = True
             
     if st.session_state.get("soc_analyzed", True):
@@ -114,7 +164,7 @@ else:
             
         with c2:
             st.subheader("MITRE ATT&CK Mapping")
-            st.badge = st.markdown("""
+            st.markdown("""
             - **TA0001:** Initial Access (`T1078.004`)
             - **TA0006:** Credential Access (`T1110.001`)
             - **TA0004:** Privilege Escalation (`T1098`)
@@ -130,6 +180,42 @@ else:
                 st.success("✅ Ingress ACL updated across Cloudflare & AWS Security Groups.")
             if st.button("🛑 Authorize: Isolate Bastion Host", use_container_width=True):
                 st.success("✅ Host network-quarantined via EDR integration.")
+
+    # -------------------------------------------------------------------------
+    # SOC AI CHATBOT / COPILOT SECTION
+    # -------------------------------------------------------------------------
+    st.markdown("---")
+    st.subheader("🤖 Sentinel AI SOC Investigation Copilot (Live Chat)")
+    st.caption("Ask questions about attack techniques, compromised identities, log timelines, or containment steps.")
+
+    # Display SOC chat history
+    soc_chat_container = st.container()
+    with soc_chat_container:
+        for message in st.session_state["soc_chat_history"]:
+            with st.chat_message(message["role"]):
+                st.markdown(message["content"])
+
+    # Chat Input
+    if soc_prompt := st.chat_input("Ask the SOC AI Copilot anything... (e.g. 'What MITRE techniques were used?' or 'How should we contain this?')"):
+        # User message
+        st.session_state["soc_chat_history"].append({"role": "user", "content": soc_prompt})
+        with st.chat_message("user"):
+            st.markdown(soc_prompt)
+
+        # AI Assistant Response
+        p_low = soc_prompt.lower()
+        if "mitre" in p_low or "technique" in p_low:
+            soc_reply = "🛡️ **MITRE ATT&CK Breakdown:**\n- **T1078.004 (Valid Cloud Accounts):** Compromised identity via brute force\n- **T1098 (Account Manipulation):** AdministratorAccess IAM role attachment\n- **T1537 (Transfer to Cloud Account):** High-volume S3 bucket download"
+        elif "user" in p_low or "who" in p_low or "identity" in p_low:
+            soc_reply = "👤 **Targeted Identity:** `alex.dev@corp.internal`. Ingress originated from Tor exit node `185.220.101.5` bypassing standard MFA via Legacy Basic Auth endpoint."
+        elif "contain" in p_low or "remediate" in p_low or "action" in p_low:
+            soc_reply = "🛑 **Recommended SOAR Containment:**\n1. Invalidate active STS tokens & terminate Okta sessions.\n2. Apply border BGP firewall drop rule on `185.220.101.5`.\n3. Revert IAM Policy modification on `AdministratorAccess`.\n4. Rotate access credentials and enforce WebAuthn hardware keys."
+        else:
+            soc_reply = f"🔍 **Sentinel AI SOC Analysis:** In response to '{soc_prompt}', the active incident represents a multi-stage cloud infrastructure compromise rated at **CRITICAL (98/100)**. All indicators of compromise (IOCs) are staged for your one-click authorization in the SOAR panel above."
+
+        st.session_state["soc_chat_history"].append({"role": "assistant", "content": soc_reply})
+        with soc_chat_message := st.chat_message("assistant"):
+            st.markdown(soc_reply)
 
 # Footer
 st.markdown("---")
