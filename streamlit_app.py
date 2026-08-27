@@ -17,8 +17,6 @@ st.markdown("""
 <style>
     .stApp { background-color: #07090e; color: #f8fafc; }
     .stButton>button { border-radius: 10px; font-weight: 600; }
-    .chat-bubble-user { background: #4f46e5; color: white; padding: 10px 14px; border-radius: 12px 12px 0px 12px; margin-bottom: 8px; margin-left: auto; width: fit-content; max-width: 80%; }
-    .chat-bubble-agent { background: #1e293b; color: #e2e8f0; padding: 10px 14px; border-radius: 12px 12px 12px 0px; margin-bottom: 8px; margin-right: auto; width: fit-content; max-width: 80%; border: 1px solid #334155; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -94,28 +92,20 @@ PRIMARY DISPATCH: Direct Trauma Unit & Traffic Control""", language="yaml")
         st.warning("🚓 **Police Patrol Unit 04** — 0.9 km (2 min ETA)")
         st.error("🚒 **Fire Rescue Station 11** — 3.1 km (7 min ETA)")
 
-    # -------------------------------------------------------------------------
-    # EMERGENCY AI CHATBOT / COPILOT SECTION
-    # -------------------------------------------------------------------------
+    # EMERGENCY CHATBOT SECTION
     st.markdown("---")
     st.subheader("💬 BantPT AI Emergency Field Copilot (Live Chat)")
     st.caption("Ask questions about first aid, triage, handling burns, CPR rhythm, or bystander safety.")
 
-    # Display chat history
-    chat_container = st.container()
-    with chat_container:
-        for message in st.session_state["emergency_chat_history"]:
-            with st.chat_message(message["role"]):
-                st.markdown(message["content"])
+    for message in st.session_state["emergency_chat_history"]:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
 
-    # Chat Input
-    if prompt := st.chat_input("Ask the Emergency AI Assistant anything... (e.g. 'How do I perform CPR on an adult?' or 'How to stop bleeding?')"):
-        # User message
+    if prompt := st.chat_input("Ask the Emergency AI Assistant anything... (e.g. 'How do I perform CPR?' or 'How to stop bleeding?')"):
         st.session_state["emergency_chat_history"].append({"role": "user", "content": prompt})
         with st.chat_message("user"):
             st.markdown(prompt)
 
-        # AI Assistant Response
         p_low = prompt.lower()
         if "cpr" in p_low:
             reply = "🫀 **CPR Instructions:** Place heel of hand in center of chest. Push hard and fast at **100–120 beats/min** (to the rhythm of 'Stayin' Alive'). Compress 2 inches deep. Do not interrupt compressions until EMS arrives."
@@ -181,28 +171,20 @@ else:
             if st.button("🛑 Authorize: Isolate Bastion Host", use_container_width=True):
                 st.success("✅ Host network-quarantined via EDR integration.")
 
-    # -------------------------------------------------------------------------
-    # SOC AI CHATBOT / COPILOT SECTION
-    # -------------------------------------------------------------------------
+    # SOC CHATBOT SECTION
     st.markdown("---")
     st.subheader("🤖 Sentinel AI SOC Investigation Copilot (Live Chat)")
     st.caption("Ask questions about attack techniques, compromised identities, log timelines, or containment steps.")
 
-    # Display SOC chat history
-    soc_chat_container = st.container()
-    with soc_chat_container:
-        for message in st.session_state["soc_chat_history"]:
-            with st.chat_message(message["role"]):
-                st.markdown(message["content"])
+    for message in st.session_state["soc_chat_history"]:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
 
-    # Chat Input
     if soc_prompt := st.chat_input("Ask the SOC AI Copilot anything... (e.g. 'What MITRE techniques were used?' or 'How should we contain this?')"):
-        # User message
         st.session_state["soc_chat_history"].append({"role": "user", "content": soc_prompt})
         with st.chat_message("user"):
             st.markdown(soc_prompt)
 
-        # AI Assistant Response
         p_low = soc_prompt.lower()
         if "mitre" in p_low or "technique" in p_low:
             soc_reply = "🛡️ **MITRE ATT&CK Breakdown:**\n- **T1078.004 (Valid Cloud Accounts):** Compromised identity via brute force\n- **T1098 (Account Manipulation):** AdministratorAccess IAM role attachment\n- **T1537 (Transfer to Cloud Account):** High-volume S3 bucket download"
@@ -214,7 +196,7 @@ else:
             soc_reply = f"🔍 **Sentinel AI SOC Analysis:** In response to '{soc_prompt}', the active incident represents a multi-stage cloud infrastructure compromise rated at **CRITICAL (98/100)**. All indicators of compromise (IOCs) are staged for your one-click authorization in the SOAR panel above."
 
         st.session_state["soc_chat_history"].append({"role": "assistant", "content": soc_reply})
-        with soc_chat_message := st.chat_message("assistant"):
+        with st.chat_message("assistant"):
             st.markdown(soc_reply)
 
 # Footer
